@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Intelligence Portal</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f0f8ff; }
+        header { background-color: #004d80; color: white; padding: 1rem; text-align: center; }
+        .container { padding: 1rem; }
+        .language-selector { position: absolute; top: 1rem; right: 1rem; }
+        .alert { border: 1px solid; margin: 10px 0; padding: 15px; border-radius: 5px; }
+        .alert-Red { border-color: #f5c6cb; background-color: #f8d7da; color: #721c24; }
+        .alert-Orange { border-color: #ffeeba; background-color: #fff3cd; color: #856404; }
+
+        /* SOS Button */
+        .sos-button { position: fixed; bottom: 20px; right: 20px; background-color: #dc3545; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 1.5rem; box-shadow: 0 4px 8px rgba(0,0,0,0.2); cursor: pointer; z-index: 1000; }
+
+        /* SOS Modal */
+        .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px; }
+        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ocean Intelligence Portal</h1>
+        <div class="language-selector">
+            <select id="language-select">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="ta">Tamil</option>
+                <option value="es">Spanish</option>
+            </select>
+        </div>
+    </header>
+    <div class="container">
+        <h2 id="welcome-message">Welcome</h2>
+        <div id="alerts-container">
+            <p>Loading intelligence data...</p>
+        </div>
+    </div>
+
+    <button class="sos-button" id="sos-btn">SOS</button>
+
+    <div id="sos-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal-btn">&times;</span>
+            <h2>Send SOS Report</h2>
+            <form id="sos-form">
+                <label for="incident-type">Incident Type:</label>
+                <select id="incident-type" name="incident-type" required>
+                    <option value="Accident">Accident</option>
+                    <option value="Robbery">Robbery</option>
+                    <option value="Oil Spill">Oil Spill</option>
+                    <option value="Other">Other</option>
+                </select>
+                <br><br>
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes" rows="4" style="width: 100%;"></textarea>
+                <br><br>
+                <button type="submit">Send SOS</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+    <script src="db.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentUser = {};
+            const welcomeMessage = document.getElementById('welcome-message');
+            const alertsContainer = document.getElementById('alerts-container');
+            const languageSelect = document.getElementById('language-select');
+
+            const fetchUser = fetch('http://localhost:5001/auth/user').then(response => response.json());
+            const fetchAlerts = fetch('http://localhost:5002/alerts').then(response => response.json());
+
+            Promise.all([fetchUser, fetchAlerts])
+                .then(([user, alerts]) => {
+                    currentUser = user; // Store user data
+                    welcomeMessage.textContent = `Welcome, ${user.name}`;
+                    languageSelect.value = user.language_preference;
+                    alertsContainer.innerHTML = '';
+                    alerts.forEach(alert => {
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = `alert alert-${alert.severity}`;
+                        alertDiv.innerHTML = `<strong>${alert.type} Alert:</strong> ${alert.message}`;
+                        alertsContainer.appendChild(alertDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    alertsContainer.innerHTML = '<p>Could not load intelligence data. Please try again later.</p>';
+                });
+
+            // SOS Modal Logic
+            const sosModal = document.getElementById('sos-modal');
+            const sosBtn = document.getElementById('sos-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const sosForm = document.getElementById('sos-form');
+
+            sosBtn.onclick = () => sosModal.style.display = 'block';
+            closeModalBtn.onclick = () => sosModal.style.display = 'none';
+            window.onclick = event => {
+                if (event.target == sosModal) {
+                    sosModal.style.display = 'none';
+                }
+            };
+
+            // SOS Form Submission
+            sosForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const incidentType = document.getElementById('incident-type').value;
+                const notes = document.getElementById('notes').value;
+
+                const report = {
+                    userId: currentUser.id || 'anonymous',
+                    incidentType: incidentType,
+                    notes: notes,
+                    timestamp: new Date().toISOString(),
+                    location: {
+                        lat: '10.123', // Mock GPS data
+                        lon: '80.456'
+                    }
+                };
+
+                addSosReport(report).then(() => {
+                    alert('SOS report cached. It will be sent automatically when you are back online.');
+                    sosModal.style.display = 'none';
+                    sosForm.reset();
+
+                    // Register background sync
+                    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                        navigator.serviceWorker.ready.then(sw => {
+                            sw.sync.register('sos-sync');
+                        });
+                    }
+                }).catch(err => {
+                    console.error('Error saving SOS report:', err);
+                    alert('Could not save SOS report.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
