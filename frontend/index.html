@@ -232,15 +232,35 @@
         };
 
         const handleGetAdvice = () => {
-            const now = new Date();
-            tradeAdvice = {
-                species: species,
-                timestamp: now.toLocaleString(),
-                suggestion: species === "Tuna"
-                    ? "Delay large-scale tuna catch for 5 days; focus on smaller coastal stocks. Market demand high next week — hold to increase price."
-                    : "Short-term opportunity: moderate effort; avoid juvenile-rich zones. Consider certification label to increase buyer price.",
-                expectedIncrease: species === "Tuna" ? "+18% price premium in 7 days" : "+8% yield with sustainable harvest",
+            const adviceData = {
+                "Tuna": {
+                    suggestion: "Delay large-scale tuna catch for 5 days; focus on smaller coastal stocks. Market demand high next week — hold to increase price.",
+                    expectedIncrease: "+18% price premium in 7 days",
+                },
+                "Shrimp": {
+                    suggestion: "Short-term opportunity: moderate effort; avoid juvenile-rich zones. Consider certification label to increase buyer price.",
+                    expectedIncrease: "+8% yield with sustainable harvest",
+                },
+                "Sardine": {
+                    suggestion: "High concentration of sardines near the coast. Good for a quick catch. Market prices are stable.",
+                    expectedIncrease: "+5% yield with minimal effort",
+                },
+                "Snapper": {
+                    suggestion: "Snapper population is healthy, but avoid overfishing in protected zones. Demand is high in local markets.",
+                    expectedIncrease: "+10% yield with sustainable practices",
+                }
             };
+
+            const advice = adviceData[species];
+
+            if (advice) {
+                tradeAdvice = {
+                    species: species,
+                    timestamp: "9/19/2025, 12:01:51 PM",
+                    suggestion: advice.suggestion,
+                    expectedIncrease: advice.expectedIncrease,
+                };
+            }
             render();
         };
 
