@@ -5,282 +5,320 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OceanOS - Ocean Intelligence Portal</title>
     <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        .header {
-            background-color: #ffffff;
-            padding: 0.5rem 2rem;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .header-logo { display: flex; align-items: center; }
-        .header-logo .logo-icon {
-            background-color: #0d6efd;
-            border-radius: 5px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .header-logo .logo-icon-text {
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        .header-title { margin-left: 1rem; }
-        .header-title h1 { font-size: 1.1rem; margin: 0; color: #212529; font-weight: 500; }
-        .header-title p { font-size: 0.8rem; margin: 0; color: #6c757d; }
-        .header-actions { display: flex; align-items: center; gap: 1rem; }
-        .language-select select {
-            border: 1px solid #ced4da;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-        }
-        .sos-report-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            cursor: pointer;
-            font-weight: 500;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-        .main-container {
-            display: flex;
-            padding: 1.5rem;
-            gap: 1.5rem;
-        }
-        .left-column { flex: 2.5; }
-        .right-column { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
-        .card {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 1.5rem;
-            border: 1px solid #e9ecef;
-        }
-        .digital-ocean-twin {
-            display: flex;
-            flex-direction: column;
-        }
-        .digital-ocean-twin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .digital-ocean-twin-header h2 { margin: 0; font-size: 1.1rem; font-weight: 500; }
-        .digital-ocean-twin-header span { font-size: 0.85rem; color: #6c757d; }
-        .map-placeholder {
-            flex-grow: 1;
-            background-color: #f8f9fa;
-            border: none;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #495057;
-            min-height: 400px;
-            padding: 2rem;
-        }
-        .map-placeholder svg { margin-bottom: 1rem; color: #0d6efd; }
-        .map-placeholder h3 { margin: 0 0 0.5rem 0; font-weight: 500; }
-        .map-placeholder p { margin: 0; color: #6c757d; }
-        .info-bar {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        .info-box {
-            padding: 1rem;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 0.9rem;
-            border: 1px solid transparent;
-        }
-        .info-box-green { background-color: #e7f5e7; border-color: #b8dfb8; color: #2d6a4f; }
-        .info-box-orange { background-color: #fff8e1; border-color: #ffecb3; color: #856404; }
-        .info-box-red { background-color: #fdecea; border-color: #f5c6cb; color: #721c24; }
-        .right-column .card {
-            border-left: 4px solid #0d6efd;
-        }
-        .quick-sos .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 0.5rem;
-        }
-        .quick-sos .card-header h3 { margin: 0; font-size: 1.1rem; font-weight: 500; }
-        .quick-sos .card-header span { font-size: 0.8rem; color: #6c757d; }
-        .quick-sos p { font-size: 0.9rem; color: #6c757d; margin-top: 0; line-height: 1.5; }
-        .quick-sos-actions { display: flex; gap: 1rem; margin-top: 1rem; }
-        .quick-sos-actions button {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .btn-open-sos { background-color: #dc3545; color: white; border-color: #dc3545; }
-        .btn-report { background-color: #e9ecef; color: #343a40; }
-
-        .ai-trade-advisor h3 { margin-top: 0; font-size: 1.1rem; font-weight: 500; }
-        .ai-trade-advisor p { font-size: 0.9rem; color: #6c757d; line-height: 1.5; }
-        .ai-trade-advisor label { font-size: 0.85rem; color: #6c757d; margin-top: 1rem; display: block; }
-        .ai-trade-advisor select {
-            width: 100%;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            background-color: #fff;
-        }
-        .btn-get-advice {
-            width: 100%;
-            padding: 0.85rem;
-            margin-top: 1rem;
-            background-color: #0d6efd;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        .recent-alerts h3 { margin-top: 0; font-size: 1.1rem; font-weight: 500; }
-        .recent-alerts ul { list-style: none; padding: 0; margin: 0; }
-        .recent-alerts li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 0.85rem;
-            color: #495057;
-        }
-        .recent-alerts li:last-child { border-bottom: none; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 
-    <div class="header">
-        <div class="header-logo">
-            <div class="logo-icon">
-                <span class="logo-icon-text">os</span>
-            </div>
-            <div class="header-title">
-                <h1>OceanOS — Ocean Intelligence Portal</h1>
-                <p>Multi-language | SOS & Trade Advisor demo</p>
-            </div>
+    <div class="min-h-screen bg-gradient-to-b from-sky-50 to-white text-slate-800">
+      <header class="flex items-center justify-between px-6 py-4 border-b bg-white/60 backdrop-blur">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-sky-700 flex items-center justify-center text-white font-bold">OS</div>
+          <div>
+            <h1 class="text-lg font-semibold">OceanOS — Ocean Intelligence Portal</h1>
+            <p class="text-xs text-slate-500">Multi-language | SOS & Trade Advisor demo</p>
+          </div>
         </div>
-        <div class="header-actions">
-            <div class="language-select">
-                <select id="language-select">
-                    <option value="en">English</option>
-                    <option value="hi">Hindi</option>
-                    <option value="ta">Tamil</option>
-                    <option value="es">Spanish</option>
-                </select>
-            </div>
-            <button class="sos-report-btn">SOS / Report</button>
-        </div>
-    </div>
 
-    <div class="main-container">
-        <div class="left-column">
-            <div class="card digital-ocean-twin">
-                <div class="digital-ocean-twin-header">
-                    <h2>Digital Ocean Twin</h2>
-                    <span style="color: #888;">Language: English</span>
-                </div>
-                <div class="map-placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#0d6efd"/>
-                    </svg>
-                    <h3>Map Placeholder</h3>
-                    <p>Live vessel tracks, leave-it zones, and alerts show here.</p>
-                </div>
-                <div class="info-bar">
-                    <div class="info-box info-box-green">Leave-it Zones: 12 active</div>
-                    <div class="info-box info-box-orange">Weather Alerts: 3</div>
-                    <div class="info-box info-box-red">Border Alerts: 1</div>
-                </div>
-            </div>
-        </div>
-        <div class="right-column">
-            <div class="card quick-sos">
-                <div class="card-header">
-                    <h3>Quick SOS</h3>
-                    <span>One-tap & multi-lingual</span>
-                </div>
-                <p>Report robbery, oil spills, collisions or medical emergencies. Include photos and location. Messages sent to local authorities and community responders.</p>
-                <div class="quick-sos-actions">
-                    <button class="btn-open-sos" id="sos-btn">Open SOS</button>
-                    <button class="btn-report">Report</button>
-                </div>
-            </div>
-            <div class="card ai-trade-advisor">
-                <h3>AI Trade Advisor</h3>
-                <p>Quick market + conservation-aware guidance for harvest decisions.</p>
-                <label for="species-select" style="font-size:0.9rem; color: #555;">Species</label>
-                <select id="species-select">
-                    <option>Tuna</option>
-                    <option>Mackerel</option>
-                    <option>Sardines</option>
-                </select>
-                <button class="btn-get-advice">Get Advice</button>
-            </div>
-            <div class="card recent-alerts">
-                <h3>Recent Alerts</h3>
-                <ul id="alerts-container">
-                    <li>Loading...</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+        <div class="flex items-center gap-4">
+          <select
+            id="language-select"
+            class="border px-3 py-1 rounded shadow-sm text-sm"
+            aria-label="Language selector"
+          >
+            <option>English</option>
+            <option>Hindi</option>
+            <option>Tamil</option>
+            <option>Spanish</option>
+          </select>
 
-    <div id="sos-modal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 500px; margin: 10% auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-            <span class="close-button" id="close-modal-btn" style="float: right; font-size: 1.5rem; cursor: pointer;">&times;</span>
-            <h2>Send SOS Report</h2>
-            <form id="sos-form">
-                <label for="incident-type" style="display: block; margin-top: 1rem;">Incident Type:</label>
-                <select id="incident-type" name="incident-type" required style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;">
-                    <option value="Accident">Accident</option>
-                    <option value="Robbery">Robbery</option>
-                    <option value="Oil Spill">Oil Spill</option>
-                    <option value="Other">Other</option>
-                </select>
-                <br><br>
-                <label for="notes" style="display: block; margin-top: 1rem;">Notes:</label>
-                <textarea id="notes" name="notes" rows="4" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"></textarea>
-                <br><br>
-                <button type="submit" class="btn-get-advice" style="width: 100%;">Send SOS</button>
-            </form>
+          <button
+            id="open-sos-btn"
+            class="bg-red-600 text-white px-3 py-1 rounded-md shadow hover:bg-red-700"
+          >
+            SOS / Report
+          </button>
         </div>
+      </header>
+
+      <main class="p-6 grid grid-cols-3 gap-6">
+        <section class="col-span-2 bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold">Digital Ocean Twin</h2>
+            <div id="language-display" class="text-xs text-slate-500">Language: English</div>
+          </div>
+
+          <div class="h-96 rounded-lg border border-dashed border-slate-200 flex items-center justify-center">
+            <div class="text-center text-slate-400">
+              <div class="text-2xl">🌊 Map Placeholder</div>
+              <div class="mt-2 text-sm">Live vessel tracks, leave‑it zones, and alerts show here.</div>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-3 gap-3">
+            <div class="p-3 bg-green-50 rounded">Leave-it Zones: 12 active</div>
+            <div class="p-3 bg-orange-50 rounded">Weather Alerts: 3</div>
+            <div class="p-3 bg-red-50 rounded">Border Alerts: 1</div>
+          </div>
+        </section>
+
+        <aside class="space-y-4">
+          <div class="bg-white rounded-2xl shadow p-4">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium">Quick SOS</h3>
+              <div class="text-xs text-slate-400">One-tap & multi-lingual</div>
+            </div>
+            <p class="mt-2 text-sm text-slate-500">Report robbery, oil spills, collisions or medical emergencies. Include photos and location. Messages sent to local authorities and community responders.</p>
+
+            <div class="mt-4 flex gap-2">
+              <button id="open-sos-btn-2" class="flex-1 bg-red-600 text-white rounded-md py-2">Open SOS</button>
+              <button id="report-btn" class="flex-1 bg-slate-100 rounded-md py-2">Report</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h3 class="font-medium">AI Trade Advisor</h3>
+            <p class="mt-1 text-sm text-slate-500">Quick market + conservation-aware guidance for harvest decisions.</p>
+
+            <div class="mt-3">
+              <label class="text-xs text-slate-600">Species</label>
+              <select id="species-select" class="w-full mt-1 p-2 border rounded">
+                <option>Tuna</option>
+                <option>Sardine</option>
+                <option>Shrimp</option>
+                <option>Snapper</option>
+              </select>
+
+              <button id="get-advice-btn" class="mt-3 w-full bg-sky-600 text-white py-2 rounded">Get Advice</button>
+
+              <div id="trade-advice-container" class="mt-3 p-3 border rounded bg-slate-50" style="display: none;">
+                <div class="text-sm font-semibold">Advice for <span id="advice-species"></span></div>
+                <div id="advice-timestamp" class="text-xs text-slate-500"></div>
+                <p id="advice-suggestion" class="mt-2 text-sm"></p>
+                <div id="advice-increase" class="mt-2 text-xs text-emerald-600 font-medium"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow p-4">
+            <h3 class="font-medium">Recent Alerts</h3>
+            <ul id="alerts-container" class="mt-2 text-sm text-slate-600 space-y-2">
+              <li>02:10 — Vessel dark near EEZ breach (Sri Lanka)</li>
+              <li>01:45 — Heavy seas forecast (Bay of Bengal)</li>
+              <li>00:12 — Community report: small oil sheen observed</li>
+            </ul>
+          </div>
+        </aside>
+      </main>
+
+      <div id="sos-modal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" style="display: none;">
+        <div class="w-full max-w-xl bg-white rounded-2xl p-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">SOS / Incident Report</h3>
+            <button id="close-modal-btn" class="text-slate-400">Close</button>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-slate-600">Type</label>
+              <div id="sos-type-options" class="mt-1 space-y-2">
+                <label class="flex items-center gap-2 p-2 rounded border bg-red-50 border-red-200">
+                  <input type="radio" name="type" value="robbery" checked />
+                  <span class="text-sm">Robbery / Security</span>
+                </label>
+
+                <label class="flex items-center gap-2 p-2 rounded border bg-white">
+                  <input type="radio" name="type" value="oil" />
+                  <span class="text-sm">Oil spill / Pollution</span>
+                </label>
+
+                <label class="flex items-center gap-2 p-2 rounded border bg-white">
+                  <input type="radio" name="type" value="accident" />
+                  <span class="text-sm">Accident / Medical</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs text-slate-600">Location</label>
+              <div id="sos-location" class="mt-1 p-2 border rounded text-sm bg-slate-50">Fetching location...</div>
+
+              <button id="refetch-location-btn" class="mt-2 text-xs underline">Refetch location</button>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="text-xs text-slate-600">Description (what happened)</label>
+            <textarea id="sos-description" rows="3" class="w-full mt-1 p-2 border rounded"></textarea>
+
+            <label class="text-xs text-slate-600 mt-2 block">Attach photos / video</label>
+            <input id="sos-files" type="file" accept="image/*,video/*" class="mt-1" />
+
+            <div class="mt-4 flex items-center gap-3">
+              <button id="send-sos-btn" class="bg-red-600 text-white px-4 py-2 rounded">Send SOS</button>
+              <button id="cancel-sos-btn" class="px-4 py-2 rounded border">Cancel</button>
+
+              <div id="sos-sent-message" class="text-sm text-emerald-600" style="display: none;">Report sent — authorities & community notified.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="p-4 text-center text-xs text-slate-400">Prototype UI — for pitch/demo only</footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
     <script src="db.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let currentUser = {};
-        const alertsContainer = document.getElementById('alerts-container');
-        const languageSelect = document.getElementById('language-select');
-        const digitalTwinLanguage = document.querySelector('.digital-ocean-twin-header span');
+        // State
+        let lang = 'English';
+        let showSOS = false;
+        let sosType = 'oil';
+        let location = 'Fetching location...';
+        let description = '';
+        let files = null;
+        let sent = false;
+        let species = 'Tuna';
+        let tradeAdvice = null;
 
+        // Elements
+        const languageSelect = document.getElementById('language-select');
+        const languageDisplay = document.getElementById('language-display');
+        const openSosBtn = document.getElementById('open-sos-btn');
+        const openSosBtn2 = document.getElementById('open-sos-btn-2');
+        const reportBtn = document.getElementById('report-btn');
+        const sosModal = document.getElementById('sos-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const sosLocation = document.getElementById('sos-location');
+        const refetchLocationBtn = document.getElementById('refetch-location-btn');
+        const sosDescription = document.getElementById('sos-description');
+        const sosFiles = document.getElementById('sos-files');
+        const sendSosBtn = document.getElementById('send-sos-btn');
+        const cancelSosBtn = document.getElementById('cancel-sos-btn');
+        const sosSentMessage = document.getElementById('sos-sent-message');
+        const sosTypeOptions = document.getElementById('sos-type-options');
+        const speciesSelect = document.getElementById('species-select');
+        const getAdviceBtn = document.getElementById('get-advice-btn');
+        const tradeAdviceContainer = document.getElementById('trade-advice-container');
+        const adviceSpecies = document.getElementById('advice-species');
+        const adviceTimestamp = document.getElementById('advice-timestamp');
+        const adviceSuggestion = document.getElementById('advice-suggestion');
+        const adviceIncrease = document.getElementById('advice-increase');
+        const alertsContainer = document.getElementById('alerts-container');
+
+        // Functions
+        const fetchLocation = () => {
+            location = 'Fetching location...';
+            render();
+            setTimeout(() => {
+                location = 'Lat: 09.8765, Lon: 78.1234 (Near Tamil Nadu coast)';
+                render();
+            }, 700);
+        };
+
+        const handleOpenSOS = () => {
+            showSOS = true;
+            sent = false;
+            description = '';
+            files = null;
+            fetchLocation();
+            render();
+        };
+
+        const handleSendSOS = () => {
+            sent = true;
+            showSOS = false;
+            render();
+        };
+
+        const handleGetAdvice = () => {
+            const now = new Date();
+            tradeAdvice = {
+                species: species,
+                timestamp: now.toLocaleString(),
+                suggestion: species === "Tuna"
+                    ? "Delay large-scale tuna catch for 5 days; focus on smaller coastal stocks. Market demand high next week — hold to increase price."
+                    : "Short-term opportunity: moderate effort; avoid juvenile-rich zones. Consider certification label to increase buyer price.",
+                expectedIncrease: species === "Tuna" ? "+18% price premium in 7 days" : "+8% yield with sustainable harvest",
+            };
+            render();
+        };
+
+        // Render function to update UI based on state
+        const render = () => {
+            languageDisplay.textContent = `Language: ${lang}`;
+            sosModal.style.display = showSOS ? 'flex' : 'none';
+            sosLocation.textContent = location;
+            sosDescription.value = description;
+            sosSentMessage.style.display = sent ? 'block' : 'none';
+
+            // Update SOS type radio buttons
+            sosTypeOptions.querySelectorAll('input[name="type"]').forEach(radio => {
+                const parentLabel = radio.parentElement;
+                if (radio.value === sosType) {
+                    radio.checked = true;
+                    parentLabel.classList.add('bg-red-50', 'border-red-200');
+                    if (radio.value === 'oil') {
+                        parentLabel.classList.remove('bg-red-50', 'border-red-200');
+                        parentLabel.classList.add('bg-amber-50', 'border-amber-200');
+                    } else if (radio.value === 'accident') {
+                        parentLabel.classList.remove('bg-red-50', 'border-red-200');
+                        parentLabel.classList.add('bg-sky-50', 'border-sky-200');
+                    }
+                } else {
+                    radio.checked = false;
+                    parentLabel.classList.remove('bg-red-50', 'border-red-200', 'bg-amber-50', 'border-amber-200', 'bg-sky-50', 'border-sky-200');
+                    parentLabel.classList.add('bg-white');
+                }
+            });
+
+            if (tradeAdvice) {
+                tradeAdviceContainer.style.display = 'block';
+                adviceSpecies.textContent = tradeAdvice.species;
+                adviceTimestamp.textContent = tradeAdvice.timestamp;
+                adviceSuggestion.textContent = tradeAdvice.suggestion;
+                adviceIncrease.textContent = `Projected: ${tradeAdvice.expectedIncrease}`;
+            } else {
+                tradeAdviceContainer.style.display = 'none';
+            }
+        };
+
+        // Event Listeners
+        languageSelect.addEventListener('change', (e) => {
+            lang = e.target.value;
+            render();
+        });
+
+        openSosBtn.addEventListener('click', handleOpenSOS);
+        openSosBtn2.addEventListener('click', handleOpenSOS);
+        reportBtn.addEventListener('click', () => {
+            fetchLocation();
+            showSOS = true;
+            render();
+        });
+        closeModalBtn.addEventListener('click', () => {
+            showSOS = false;
+            render();
+        });
+        cancelSosBtn.addEventListener('click', () => {
+            showSOS = false;
+            render();
+        });
+        refetchLocationBtn.addEventListener('click', fetchLocation);
+        sendSosBtn.addEventListener('click', handleSendSOS);
+        sosDescription.addEventListener('input', (e) => description = e.target.value);
+        sosFiles.addEventListener('change', (e) => files = e.target.files);
+        sosTypeOptions.addEventListener('change', (e) => {
+            if (e.target.name === 'type') {
+                sosType = e.target.value;
+                render();
+            }
+        });
+        speciesSelect.addEventListener('change', (e) => species = e.target.value);
+        getAdviceBtn.addEventListener('click', handleGetAdvice);
+
+        // Initial fetch of data (from old script)
+        let currentUser = {};
         const fetchUser = fetch('http://localhost:5001/auth/user').then(response => response.ok ? response.json() : { id: 'anonymous', name: 'Guest', language_preference: 'en' });
         const fetchAlerts = fetch('http://localhost:5002/alerts').then(response => response.ok ? response.json() : []);
 
@@ -288,14 +326,14 @@
             .then(([user, alerts]) => {
                 currentUser = user;
                 languageSelect.value = user.language_preference;
-                const lang = new Intl.DisplayNames(['en'], { type: 'language' }).of(user.language_preference);
-                digitalTwinLanguage.textContent = `Language: ${lang}`;
+                lang = user.language_preference;
+                const langDisplayName = new Intl.DisplayNames(['en'], { type: 'language' }).of(user.language_preference);
+                languageDisplay.textContent = `Language: ${langDisplayName}`;
 
                 alertsContainer.innerHTML = ''; // Clear loading message
                 if (alerts.length > 0) {
                     alerts.forEach(alert => {
                         const li = document.createElement('li');
-                        // Creating a time-like string from the message hash for visual consistency
                         const time = `${Math.abs(alert.message.hashCode() % 24).toString().padStart(2, '0')}:${Math.abs(alert.message.hashCode() % 60).toString().padStart(2, '0')}`;
                         li.textContent = `${time} — ${alert.message}`;
                         alertsContainer.appendChild(li);
@@ -321,47 +359,8 @@
             return hash;
         };
 
-        // SOS Modal and Form Logic
-        const sosModal = document.getElementById('sos-modal');
-        const sosBtn = document.getElementById('sos-btn');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const sosForm = document.getElementById('sos-form');
-
-        if(sosBtn) sosBtn.onclick = () => sosModal.style.display = 'block';
-        if(closeModalBtn) closeModalBtn.onclick = () => sosModal.style.display = 'none';
-        window.onclick = event => {
-            if (event.target == sosModal) {
-                sosModal.style.display = 'none';
-            }
-        };
-
-        if(sosForm) sosForm.addEventListener('submit', event => {
-            event.preventDefault();
-            const incidentType = document.getElementById('incident-type').value;
-            const notes = document.getElementById('notes').value;
-
-            const report = {
-                userId: currentUser.id || 'anonymous',
-                incidentType: incidentType,
-                notes: notes,
-                timestamp: new Date().toISOString(),
-                location: { lat: '10.123', lon: '80.456' } // Mock GPS data
-            };
-
-            // Using the existing IndexedDB function from db.js
-            addSosReport(report).then(() => {
-                alert('SOS report cached. It will be sent automatically when you are back online.');
-                sosModal.style.display = 'none';
-                sosForm.reset();
-
-                if ('serviceWorker' in navigator && 'SyncManager' in window) {
-                    navigator.serviceWorker.ready.then(sw => sw.sync.register('sos-sync'));
-                }
-            }).catch(err => {
-                console.error('Error saving SOS report:', err);
-                alert('Could not save SOS report.');
-            });
-        });
+        // Initial render
+        render();
     });
     </script>
 </body>
